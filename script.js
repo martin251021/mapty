@@ -342,7 +342,6 @@ class App {
     }
 };
 
-// test
 
 const app = new App();
 
