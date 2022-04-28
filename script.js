@@ -95,6 +95,7 @@ class App {
         inputType.addEventListener("change", this._toggleElevationField);
         containerWorkouts.addEventListener("click", this._moveToPopup.bind(this));
 
+
         // btnEdit.addEventListener("click", this._editWorkout.bind(this));
         // btnDelete.addEventListener("click", this._deleteWorkout.bind(this));
     }
@@ -256,8 +257,8 @@ class App {
                 <span class="workout__value">${workout.cadence}</span>
                 <span class="workout__unit">spm</span>
           </div>
-          <button class="workout__btn btn_edit">Edit</button>
-          <button class="workout__btn btn_delete">Delete</button>
+                <button class="workout__btn btn_edit">Edit</button>
+                <button class="workout__btn btn_delete">Delete</button>
         </li>
             `
         if(workout.type === "cycling")
@@ -278,13 +279,13 @@ class App {
             `;
 
         form.insertAdjacentHTML("afterend", html);
-        // btnEdit = document.querySelector(".btn_edit");
+        // btnEdit = document.querySelector(".btn_edit"); 
         // btnDelete = document.querySelector(".btn_delete");
 
     }
     _moveToPopup(e) {
         const workoutEl = e.target.closest(".workout");
-        // console.log(workoutEl);
+        // console.log(e.target);
 
         if(!workoutEl) return;
 
@@ -297,6 +298,9 @@ class App {
                 duration: 1,
             }
         });
+
+        // this._editWorkout(e);
+
 
         // workout.click(); // kokotina, zmazat
     }
@@ -324,27 +328,39 @@ class App {
     } 
 
     _editWorkout(e) {
-        const btnEdEl = e.target.closest(".workout__btn");
-        if(btnEdEl === undefined) return;
+        // const workoutEl = e.target.closest(".workout");
+        const btnEdEl = e.target.closest(".btn_edit");
+        console.log(btnEdEl);
 
-        console.log("trying to edit workout..");
+        btnEdEl.addEventListener("click", function() {
+            console.log("editing workout")
+        })
+        // console.log(Array(e.target.classList));
+        
+        
+        // if(e.target.classList.includes("workout__btn")) {
+        //     console.log("okay")
+        // };
+
+        // if(!workoutEl) return;
+
+        // console.log("trying to edit workout..");
         // console.log(btnEdEl);
 
         
     }
 
     _deleteWorkout(e) {
-        e.preventDefault();
+        const btnDelEl = document.querySelector(".workout__title").parentElement.lastElementChild;
+        if(!btnDelEl) return;
 
         console.log("trying to delete workout..");
 
-        
     }
 };
 
 
 const app = new App();
-
 
 
 
