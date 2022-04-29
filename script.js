@@ -95,6 +95,7 @@ class App {
         form.addEventListener("submit", this._newWorkout.bind(this)) ;
         inputType.addEventListener("change", this._toggleElevationField);
         containerWorkouts.addEventListener("click", this._moveToPopup.bind(this));
+        // console.log(this.#mapEvent);
 
         // console.log(this.#workouts);
         // console.log(this.#workouts.indexOf(this.#workouts.find(e => e.id === "1217363828")));
@@ -137,7 +138,7 @@ class App {
     }
 
     _showForm(mapE) {
-        // console.log(mapE)
+        console.log(mapE)
         this.#mapEvent = mapE;
         form.classList.remove("hidden");
         inputDistance.focus();
@@ -331,8 +332,23 @@ class App {
         const workoutEl = e.target.closest(".workout");
         const workoutId = workoutEl.getAttribute("data-id");
         console.log(this.#workouts.find(e => e.id === workoutId));
-        // const btnEdEl = e.target.closest(".btn_edit");
-        // console.log(btnEdEl);
+        const workoutObj = this.#workouts.find(e => e.id === workoutId);
+
+        // skryt form (može byt otvoreny)
+        // this._hideForm();
+
+        // otvorit form, načítat donho stare hodnoty, užívatel upraví
+        form.classList.remove("hidden");
+        inputType.value = `${workoutObj.type}`;
+        inputDistance.value = `${workoutObj.distance}`;
+        inputDuration.value = `${workoutObj.duration}`;
+        workoutObj.type === "running" ? inputCadence.value = `${workoutObj.cadence}` : inputCadence.value = `${workoutObj.elevation}`;
+
+        // vymazat povodny workout
+        // this._deleteWorkout();
+
+        // spusit _newWorkout s novymi hodnotami
+
         console.log("trying to edit workout..");
     }
 
