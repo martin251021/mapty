@@ -279,8 +279,12 @@ class App {
             `;
 
         form.insertAdjacentHTML("afterend", html);
-        // btnEdit = document.querySelector(".btn_edit"); 
-        // btnDelete = document.querySelector(".btn_delete");
+
+        btnEdit = document.querySelector(".btn_edit"); 
+        btnDelete = document.querySelector(".btn_delete");
+
+        btnEdit.addEventListener("click", this._editWorkout.bind(this));
+        btnDelete.addEventListener("click", this._deleteWorkout.bind(this));
 
     }
     _moveToPopup(e) {
@@ -329,12 +333,12 @@ class App {
 
     _editWorkout(e) {
         // const workoutEl = e.target.closest(".workout");
-        const btnEdEl = e.target.closest(".btn_edit");
-        console.log(btnEdEl);
+        // const btnEdEl = e.target.closest(".btn_edit");
+        // console.log(btnEdEl);
 
-        btnEdEl.addEventListener("click", function() {
-            console.log("editing workout")
-        })
+        // btnEdEl.addEventListener("click", function() {
+        //     console.log("editing workout")
+        // })
         // console.log(Array(e.target.classList));
         
         
@@ -344,15 +348,15 @@ class App {
 
         // if(!workoutEl) return;
 
-        // console.log("trying to edit workout..");
+        console.log("trying to edit workout..");
         // console.log(btnEdEl);
 
         
     }
 
     _deleteWorkout(e) {
-        const btnDelEl = document.querySelector(".workout__title").parentElement.lastElementChild;
-        if(!btnDelEl) return;
+        // const btnDelEl = document.querySelector(".workout__title").parentElement.lastElementChild;
+        // if(!btnDelEl) return;
 
         console.log("trying to delete workout..");
 
