@@ -80,6 +80,7 @@ class App {
     #map;
     #mapEvent;
     #workouts = [];
+    
 
     constructor() {
         this._getPosition(); 
@@ -95,9 +96,8 @@ class App {
         inputType.addEventListener("change", this._toggleElevationField);
         containerWorkouts.addEventListener("click", this._moveToPopup.bind(this));
 
-
-        // btnEdit.addEventListener("click", this._editWorkout.bind(this));
-        // btnDelete.addEventListener("click", this._deleteWorkout.bind(this));
+        // console.log(this.#workouts);
+        // console.log(this.#workouts.indexOf(this.#workouts.find(e => e.id === "1217363828")));
     }
 
     _getPosition() {
@@ -303,11 +303,8 @@ class App {
             }
         });
 
-        // this._editWorkout(e);
-
-
-        // workout.click(); // kokotina, zmazat
     }
+    
     _setLocalStorage() {
         localStorage.setItem("workouts", JSON.stringify(this.#workouts));
     }
@@ -315,7 +312,6 @@ class App {
     _getLocalStorage() {
         const data = JSON.parse(localStorage.getItem("workouts"));
         
-
         if(!data) return;
 
         this.#workouts = data;
@@ -332,33 +328,26 @@ class App {
     } 
 
     _editWorkout(e) {
-        // const workoutEl = e.target.closest(".workout");
+        const workoutEl = e.target.closest(".workout");
+        const workoutId = workoutEl.getAttribute("data-id");
+        console.log(this.#workouts.find(e => e.id === workoutId));
         // const btnEdEl = e.target.closest(".btn_edit");
         // console.log(btnEdEl);
-
-        // btnEdEl.addEventListener("click", function() {
-        //     console.log("editing workout")
-        // })
-        // console.log(Array(e.target.classList));
-        
-        
-        // if(e.target.classList.includes("workout__btn")) {
-        //     console.log("okay")
-        // };
-
-        // if(!workoutEl) return;
-
         console.log("trying to edit workout..");
-        // console.log(btnEdEl);
-
-        
     }
 
     _deleteWorkout(e) {
+        const workoutEl = e.target.closest(".workout");
+        const workoutId = workoutEl.getAttribute("data-id");
+        this.reset();
+        this.#workouts.splice(this.#workouts.indexOf(this.#workouts.find(e => e.id === `${workoutId}`)), 1);
+        this._setLocalStorage();
+
+        // console.log(this.#workouts.find(e => e.id === workoutId));
         // const btnDelEl = document.querySelector(".workout__title").parentElement.lastElementChild;
         // if(!btnDelEl) return;
 
-        console.log("trying to delete workout..");
+        
 
     }
 };
