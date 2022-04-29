@@ -304,7 +304,7 @@ class App {
         });
 
     }
-    
+
     _setLocalStorage() {
         localStorage.setItem("workouts", JSON.stringify(this.#workouts));
     }
@@ -342,12 +342,6 @@ class App {
         this.reset();
         this.#workouts.splice(this.#workouts.indexOf(this.#workouts.find(e => e.id === `${workoutId}`)), 1);
         this._setLocalStorage();
-
-        // console.log(this.#workouts.find(e => e.id === workoutId));
-        // const btnDelEl = document.querySelector(".workout__title").parentElement.lastElementChild;
-        // if(!btnDelEl) return;
-
-        
 
     }
 };
