@@ -73,6 +73,13 @@ const inputDuration = document.querySelector('.form__input--duration');
 const inputCadence = document.querySelector('.form__input--cadence');
 const inputElevation = document.querySelector('.form__input--elevation');
 
+const formEdit = document.querySelector(".form__edit");
+const inputTypeEd = document.querySelector('.form__ed__input--type');
+const inputDistanceEd = document.querySelector('.form__ed__input--distance');
+const inputDurationEd = document.querySelector('.form__ed__input--duration');
+const inputCadenceEd = document.querySelector('.form__ed__input--cadence');
+const inputElevationEd = document.querySelector('.form__ed__input--elevation');
+
 let btnEdit, btnDelete;
 
 
@@ -138,7 +145,7 @@ class App {
     }
 
     _showForm(mapE) {
-        console.log(mapE)
+        // console.log(mapE)
         this.#mapEvent = mapE;
         form.classList.remove("hidden");
         inputDistance.focus();
@@ -151,6 +158,14 @@ class App {
         form.style.display = "none";
         form.classList.add("hidden");
         setTimeout(() => (form.style.display = "grid"), 1000)
+    }
+
+    _hideFormEd() {
+        inputDistanceEd.value = inputDurationEd.value = inputCadenceEd.value = inputElevationEd.value = "";
+        
+        formEdit.style.display = "none";
+        formEdit.classList.add("hidden");
+        setTimeout(() => (formEdit.style.display = "grid"), 1000)
     }
 
     _toggleElevationField() {
@@ -279,7 +294,8 @@ class App {
         </li>
             `;
 
-        form.insertAdjacentHTML("afterend", html);
+        // form.insertAdjacentHTML("afterend", html);
+        formEdit.insertAdjacentHTML("afterend", html);
 
         btnEdit = document.querySelector(".btn_edit"); 
         btnDelete = document.querySelector(".btn_delete");
@@ -338,13 +354,14 @@ class App {
         // this._hideForm();
 
         // otvorit form, načítat donho stare hodnoty, užívatel upraví
-        form.classList.remove("hidden");
-        inputType.value = `${workoutObj.type}`;
-        inputDistance.value = `${workoutObj.distance}`;
-        inputDuration.value = `${workoutObj.duration}`;
-        workoutObj.type === "running" ? inputCadence.value = `${workoutObj.cadence}` : inputCadence.value = `${workoutObj.elevation}`;
+        formEdit.classList.remove("hidden");
+        inputTypeEd.value = `${workoutObj.type}`;
+        inputDistanceEd.value = `${workoutObj.distance}`;
+        inputDurationEd.value = `${workoutObj.duration}`;
+        workoutObj.type === "running" ? inputCadenceEd.value = `${workoutObj.cadence}` : inputCadenceEd.value = `${workoutObj.elevation}`;
 
         // vymazat povodny workout
+        
         // this._deleteWorkout();
 
         // spusit _newWorkout s novymi hodnotami
