@@ -80,7 +80,7 @@ const inputDurationEd = document.querySelector('.form__ed__input--duration');
 const inputCadenceEd = document.querySelector('.form__ed__input--cadence');
 const inputElevationEd = document.querySelector('.form__ed__input--elevation');
 
-let btnEdit, btnDelete;
+let btnEdit, btnDelete, currEditId;
 
 
 class App {
@@ -106,6 +106,9 @@ class App {
 
         // console.log(this.#workouts);
         // console.log(this.#workouts.indexOf(this.#workouts.find(e => e.id === "1217363828")));
+
+        formEdit.addEventListener("submit", this._editWorkoutSubmit.bind(this));
+        inputTypeEd.addEventListener("change", this._toggleElevationFieldEd)
     }
 
     _getPosition() {
@@ -171,6 +174,11 @@ class App {
     _toggleElevationField() {
         inputElevation.closest(".form__row").classList.toggle("form__row--hidden");
         inputCadence.closest(".form__row").classList.toggle("form__row--hidden");
+    }
+
+    _toggleElevationFieldEd() {
+        inputElevationEd.closest(".form__row").classList.toggle("form__row--hidden");
+        inputCadenceEd.closest(".form__row").classList.toggle("form__row--hidden");
     }
 
     _newWorkout(e) {
@@ -347,6 +355,7 @@ class App {
     _editWorkout(e) {
         const workoutEl = e.target.closest(".workout");
         const workoutId = workoutEl.getAttribute("data-id");
+        currEditId = workoutId;
         console.log(this.#workouts.find(e => e.id === workoutId));
         const workoutObj = this.#workouts.find(e => e.id === workoutId);
 
@@ -361,12 +370,79 @@ class App {
         workoutObj.type === "running" ? inputCadenceEd.value = `${workoutObj.cadence}` : inputCadenceEd.value = `${workoutObj.elevation}`;
 
         // vymazat povodny workout
-        
+
         // this._deleteWorkout();
 
         // spusit _newWorkout s novymi hodnotami
 
         console.log("trying to edit workout..");
+        // console.log(currEditId);
+    }
+
+    _editWorkoutSubmit(e) {
+        const validInputs = (...inputs) => inputs.every(e => Number.isFinite(e));
+        const allPositive = (...inputs) => inputs.every(e => e > 0);
+
+        e.preventDefault();
+
+        // get data from form
+        const type = inputTypeEd.value;
+        const distance = +inputDistanceEd.value;
+        const duration = +inputDurationEd.value;
+        // const {lat, lng} = this.#mapEvent.latlng;
+        // let workout;
+
+        // zistit index objektu v array #workouts
+        let workoutIndex = this.#workouts.indexOf(this.#workouts.find(e => e.id === String(currEditId)));
+        // console.log(workoutIndex);
+        
+        // check if data is valid
+
+        // if activity running, create running object, if activity cycling, create cycling object
+        if(type === "running") {
+            const cadence = +inputCadenceEd.value;
+            if(
+                // !Number.isFinite(distance) ||
+                // !Number.isFinite(duration) ||
+                // !Number.isFinite(cadence)
+                !validInputs(distance, duration, cadence) || !allPositive(distance, duration, cadence)
+                ) 
+                return alert("Inputs have to be positive numbers!")
+
+            // upravit data v objekte
+            this.#workouts[workoutIndex].type = type;
+            this.#workouts[workoutIndex].distance = distance;
+            this.#workouts[workoutIndex].duration = duration;
+            this.#workouts[workoutIndex].cadence = cadence
+        }
+
+        if(type === "cycling") {
+            const elevation = +inputElevationEd.value;
+
+            if(!validInputs(distance, duration, elevation) || !allPositive(distance, duration))
+                return alert("Inputs have to be positive numbers!")
+
+                // upravit data v objekte
+                this.#workouts[workoutIndex].type = type;
+                this.#workouts[workoutIndex].distance = distance;
+                this.#workouts[workoutIndex].duration = duration;
+                this.#workouts[workoutIndex].elevation = elevation;
+
+        }
+
+        // render workout on map as marker
+        this._renderWorkoutMarker(this.#workouts[workoutIndex])
+
+        // render workout on list
+        this._renderWorkout(this.#workouts[workoutIndex]);
+        
+        // clear input fields + hide form
+        this._hideFormEd();
+
+        // set local storage to all workouts
+        this._setLocalStorage();
+
+        location.reload();
     }
 
     _deleteWorkout(e) {
