@@ -104,7 +104,7 @@ class App {
         containerWorkouts.addEventListener("click", this._moveToPopup.bind(this));
         // console.log(this.#mapEvent);
 
-        console.log(this.#workouts);
+        // console.log(this.#workouts);
         // console.log(this.#workouts.indexOf(this.#workouts.find(e => e.id === "1217363828")));
 
         formEdit.addEventListener("submit", this._editWorkoutSubmit.bind(this));
@@ -213,6 +213,7 @@ class App {
         const distance = +inputDistance.value;
         const duration = +inputDuration.value;
         const {lat, lng} = this.#mapEvent.latlng;
+        // console.log(this.#mapEvent);
         let workout;
         
         // check if data is valid
@@ -418,7 +419,8 @@ class App {
 
         // zistit index objektu v array #workouts
         let workoutIndex = this.#workouts.indexOf(this.#workouts.find(e => e.id === String(currEditId)));
-        let {lat, lng} = this.#workouts[workoutIndex].coords;
+        let [lat, lng] = this.#workouts[workoutIndex].coords;
+        let workout;
         // console.log(workoutIndex);
         
         // 
@@ -439,6 +441,12 @@ class App {
             this.#workouts[workoutIndex].distance = distance;
             this.#workouts[workoutIndex].duration = duration;
             this.#workouts[workoutIndex].cadence = cadence;
+
+        // render workout on map as marker
+        this._renderWorkoutMarker(this.#workouts[workoutIndex])
+
+        // render workout on list
+        this._renderWorkout(this.#workouts[workoutIndex]);
         }
 
         if(type === "cycling" && this.#workouts[workoutIndex].type === "cycling") {
@@ -452,6 +460,12 @@ class App {
                 this.#workouts[workoutIndex].distance = distance;
                 this.#workouts[workoutIndex].duration = duration;
                 this.#workouts[workoutIndex].elevationGain = elevation;
+
+        // render workout on map as marker
+        this._renderWorkoutMarker(this.#workouts[workoutIndex])
+
+        // render workout on list
+        this._renderWorkout(this.#workouts[workoutIndex]);
 
         }
         // zmena typu workoutu - nutné vymazat povodny workout a založiť nový so správnym typom
@@ -468,18 +482,38 @@ class App {
                 return alert("Inputs have to be positive numbers!")
 
             workout = new Running([lat, lng], distance, duration, cadence);
+
+                    // add new object to the workout array
+            this.#workouts.push(workout);
+            // console.log(workout);
+
+            // render workout on map as marker
+            this._renderWorkoutMarker(workout)
+
+            // render workout on list
+            this._renderWorkout(workout);
         }
 
         if(type === "cycling" && this.#workouts[workoutIndex].type === "running") {
             this.#workouts.splice(workoutIndex, 1);
+
+            const elevation = +inputElevation.value;
+
+            if(!validInputs(distance, duration, elevation) || !allPositive(distance, duration))
+                return alert("Inputs have to be positive numbers!")
+
+            workout = new Cycling([lat, lng], distance, duration, elevation);
+
+            this.#workouts.push(workout);
+            // console.log(workout);
+
+            // render workout on map as marker
+            this._renderWorkoutMarker(workout)
+
+            // render workout on list
+            this._renderWorkout(workout);
             
         }
-
-        // render workout on map as marker
-        this._renderWorkoutMarker(this.#workouts[workoutIndex])
-
-        // render workout on list
-        this._renderWorkout(this.#workouts[workoutIndex]);
         
         // clear input fields + hide form
         this._hideFormEd();
