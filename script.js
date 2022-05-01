@@ -177,8 +177,29 @@ class App {
     }
 
     _toggleElevationFieldEd() {
-        inputElevationEd.closest(".form__row").classList.toggle("form__row--hidden");
-        inputCadenceEd.closest(".form__row").classList.toggle("form__row--hidden");
+        if(inputTypeEd.value === "cycling") {
+            inputElevationEd.closest(".form__row").classList.remove("form__row--hidden");
+            inputCadenceEd.closest(".form__row").classList.add("form__row--hidden");
+        }
+
+        if(inputTypeEd.value === "running") {
+            inputCadenceEd.closest(".form__row").classList.remove("form__row--hidden");
+            inputElevationEd.closest(".form__row").classList.add("form__row--hidden");       
+        }
+    }
+
+    _switchingElevCadeFieldEd() {
+        if(inputTypeEd.value === "cycling") {
+            inputElevationEd.closest(".form__row").classList.remove("form__row--hidden");
+            inputCadenceEd.closest(".form__row").classList.add("form__row--hidden");
+            
+        }
+
+        if(inputTypeEd.value === "running") {
+            inputCadenceEd.closest(".form__row").classList.remove("form__row--hidden");
+            inputElevationEd.closest(".form__row").classList.add("form__row--hidden");
+            
+        }
     }
 
     _newWorkout(e) {
@@ -367,7 +388,10 @@ class App {
         inputTypeEd.value = `${workoutObj.type}`;
         inputDistanceEd.value = `${workoutObj.distance}`;
         inputDurationEd.value = `${workoutObj.duration}`;
-        workoutObj.type === "running" ? inputCadenceEd.value = `${workoutObj.cadence}` : inputCadenceEd.value = `${workoutObj.elevation}`;
+        workoutObj.type === "running" ? inputCadenceEd.value = `${workoutObj.cadence}` : inputElevationEd.value = `${workoutObj.elevationGain}`;
+
+        // zmena cadence/elev fieldu
+        this._switchingElevCadeFieldEd();
 
         // vymazat povodny workout
 
@@ -396,10 +420,10 @@ class App {
         let workoutIndex = this.#workouts.indexOf(this.#workouts.find(e => e.id === String(currEditId)));
         // console.log(workoutIndex);
         
-        // check if data is valid
+        // 
 
-        // if activity running, create running object, if activity cycling, create cycling object
-        if(type === "running") {
+        // upravovanie properties objektov za predpokladu že sa nemení type
+        if(type === "running" && this.#workouts[workoutIndex].type === "running") {
             const cadence = +inputCadenceEd.value;
             if(
                 // !Number.isFinite(distance) ||
@@ -413,10 +437,10 @@ class App {
             this.#workouts[workoutIndex].type = type;
             this.#workouts[workoutIndex].distance = distance;
             this.#workouts[workoutIndex].duration = duration;
-            this.#workouts[workoutIndex].cadence = cadence
+            this.#workouts[workoutIndex].cadence = cadence;
         }
 
-        if(type === "cycling") {
+        if(type === "cycling" && this.#workouts[workoutIndex].type === "cycling") {
             const elevation = +inputElevationEd.value;
 
             if(!validInputs(distance, duration, elevation) || !allPositive(distance, duration))
@@ -426,9 +450,11 @@ class App {
                 this.#workouts[workoutIndex].type = type;
                 this.#workouts[workoutIndex].distance = distance;
                 this.#workouts[workoutIndex].duration = duration;
-                this.#workouts[workoutIndex].elevation = elevation;
+                this.#workouts[workoutIndex].elevationGain = elevation;
 
         }
+        // zmena typu workoutu - nutné vymazat povodny workout a založiť nový so správnym typom
+        if(type === "running")
 
         // render workout on map as marker
         this._renderWorkoutMarker(this.#workouts[workoutIndex])
