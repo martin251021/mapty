@@ -104,7 +104,7 @@ class App {
         containerWorkouts.addEventListener("click", this._moveToPopup.bind(this));
         // console.log(this.#mapEvent);
 
-        // console.log(this.#workouts);
+        console.log(this.#workouts);
         // console.log(this.#workouts.indexOf(this.#workouts.find(e => e.id === "1217363828")));
 
         formEdit.addEventListener("submit", this._editWorkoutSubmit.bind(this));
@@ -418,6 +418,7 @@ class App {
 
         // zistit index objektu v array #workouts
         let workoutIndex = this.#workouts.indexOf(this.#workouts.find(e => e.id === String(currEditId)));
+        let {lat, lng} = this.#workouts[workoutIndex].coords;
         // console.log(workoutIndex);
         
         // 
@@ -455,10 +456,22 @@ class App {
         }
         // zmena typu workoutu - nutné vymazat povodny workout a založiť nový so správnym typom
         if(type === "running" && this.#workouts[workoutIndex].type === "cycling") {
+            this.#workouts.splice(workoutIndex, 1);
 
+            const cadence = +inputCadenceEd.value;
+            if(
+                // !Number.isFinite(distance) ||
+                // !Number.isFinite(duration) ||
+                // !Number.isFinite(cadence)
+                !validInputs(distance, duration, cadence) || !allPositive(distance, duration, cadence)
+                ) 
+                return alert("Inputs have to be positive numbers!")
+
+            workout = new Running([lat, lng], distance, duration, cadence);
         }
 
         if(type === "cycling" && this.#workouts[workoutIndex].type === "running") {
+            this.#workouts.splice(workoutIndex, 1);
             
         }
 
@@ -470,6 +483,8 @@ class App {
         
         // clear input fields + hide form
         this._hideFormEd();
+
+        localStorage.removeItem("workouts");
 
         // set local storage to all workouts
         this._setLocalStorage();
