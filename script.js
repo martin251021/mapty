@@ -157,7 +157,6 @@ class App {
     _hideForm() {
         // empty inputs
         inputDistance.value = inputDuration.value = inputCadence.value = inputElevation.value = "";
-        
         form.style.display = "none";
         form.classList.add("hidden");
         setTimeout(() => (form.style.display = "grid"), 1000)
@@ -324,7 +323,6 @@ class App {
         </li>
             `;
 
-        // form.insertAdjacentHTML("afterend", html);
         formEdit.insertAdjacentHTML("afterend", html);
 
         btnEdit = document.querySelector(".btn_edit"); 
@@ -336,7 +334,6 @@ class App {
     }
     _moveToPopup(e) {
         const workoutEl = e.target.closest(".workout");
-        // console.log(e.target);
 
         if(!workoutEl) return;
 
@@ -358,9 +355,8 @@ class App {
 
     _getLocalStorage() {
         const data = JSON.parse(localStorage.getItem("workouts"));
-        
-        if(!data) return;
 
+        if(!data) return;
         this.#workouts = data;
 
         this.#workouts.forEach(e => {
@@ -378,11 +374,10 @@ class App {
         const workoutEl = e.target.closest(".workout");
         const workoutId = workoutEl.getAttribute("data-id");
         currEditId = workoutId;
-        console.log(this.#workouts.find(e => e.id === workoutId));
         const workoutObj = this.#workouts.find(e => e.id === workoutId);
 
         // skryt form (može byt otvoreny)
-        // this._hideForm();
+        this._hideForm();
 
         // otvorit form, načítat donho stare hodnoty, užívatel upraví
         formEdit.classList.remove("hidden");
@@ -390,6 +385,7 @@ class App {
         inputDistanceEd.value = `${workoutObj.distance}`;
         inputDurationEd.value = `${workoutObj.duration}`;
         workoutObj.type === "running" ? inputCadenceEd.value = `${workoutObj.cadence}` : inputElevationEd.value = `${workoutObj.elevationGain}`;
+        inputDistanceEd.focus();
 
         // zmena cadence/elev fieldu
         this._switchingElevCadeFieldEd();
@@ -414,38 +410,27 @@ class App {
         const type = inputTypeEd.value;
         const distance = +inputDistanceEd.value;
         const duration = +inputDurationEd.value;
-        // const {lat, lng} = this.#mapEvent.latlng;
-        // let workout;
 
         // zistit index objektu v array #workouts
         let workoutIndex = this.#workouts.indexOf(this.#workouts.find(e => e.id === String(currEditId)));
         let [lat, lng] = this.#workouts[workoutIndex].coords;
         let workout;
-        // console.log(workoutIndex);
-        
-        // 
 
         // upravovanie properties objektov za predpokladu že sa nemení type
         if(type === "running" && this.#workouts[workoutIndex].type === "running") {
             const cadence = +inputCadenceEd.value;
             if(
-                // !Number.isFinite(distance) ||
-                // !Number.isFinite(duration) ||
-                // !Number.isFinite(cadence)
                 !validInputs(distance, duration, cadence) || !allPositive(distance, duration, cadence)
                 ) 
                 return alert("Inputs have to be positive numbers!")
 
             // upravit data v objekte
-            this.#workouts[workoutIndex].type = type;
-            this.#workouts[workoutIndex].distance = distance;
-            this.#workouts[workoutIndex].duration = duration;
-            this.#workouts[workoutIndex].cadence = cadence;
+                this.#workouts[workoutIndex].type = type;
+                this.#workouts[workoutIndex].distance = distance;
+                this.#workouts[workoutIndex].duration = duration;
+                this.#workouts[workoutIndex].cadence = cadence;
 
-        // render workout on map as marker
         this._renderWorkoutMarker(this.#workouts[workoutIndex])
-
-        // render workout on list
         this._renderWorkout(this.#workouts[workoutIndex]);
         }
 
@@ -461,10 +446,7 @@ class App {
                 this.#workouts[workoutIndex].duration = duration;
                 this.#workouts[workoutIndex].elevationGain = elevation;
 
-        // render workout on map as marker
         this._renderWorkoutMarker(this.#workouts[workoutIndex])
-
-        // render workout on list
         this._renderWorkout(this.#workouts[workoutIndex]);
 
         }
@@ -474,23 +456,14 @@ class App {
 
             const cadence = +inputCadenceEd.value;
             if(
-                // !Number.isFinite(distance) ||
-                // !Number.isFinite(duration) ||
-                // !Number.isFinite(cadence)
                 !validInputs(distance, duration, cadence) || !allPositive(distance, duration, cadence)
                 ) 
                 return alert("Inputs have to be positive numbers!")
 
             workout = new Running([lat, lng], distance, duration, cadence);
 
-                    // add new object to the workout array
             this.#workouts.push(workout);
-            // console.log(workout);
-
-            // render workout on map as marker
             this._renderWorkoutMarker(workout)
-
-            // render workout on list
             this._renderWorkout(workout);
         }
 
@@ -505,24 +478,14 @@ class App {
             workout = new Cycling([lat, lng], distance, duration, elevation);
 
             this.#workouts.push(workout);
-            // console.log(workout);
-
-            // render workout on map as marker
             this._renderWorkoutMarker(workout)
-
-            // render workout on list
             this._renderWorkout(workout);
             
         }
         
-        // clear input fields + hide form
         this._hideFormEd();
-
         localStorage.removeItem("workouts");
-
-        // set local storage to all workouts
         this._setLocalStorage();
-
         location.reload();
     }
 
