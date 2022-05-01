@@ -454,7 +454,13 @@ class App {
 
         }
         // zmena typu workoutu - nutné vymazat povodny workout a založiť nový so správnym typom
-        if(type === "running")
+        if(type === "running" && this.#workouts[workoutIndex].type === "cycling") {
+
+        }
+
+        if(type === "cycling" && this.#workouts[workoutIndex].type === "running") {
+            
+        }
 
         // render workout on map as marker
         this._renderWorkoutMarker(this.#workouts[workoutIndex])
