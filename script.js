@@ -80,6 +80,10 @@ const inputDurationEd = document.querySelector('.form__ed__input--duration');
 const inputCadenceEd = document.querySelector('.form__ed__input--cadence');
 const inputElevationEd = document.querySelector('.form__ed__input--elevation');
 
+const modal = document.querySelector('.modal');
+const overlay = document.querySelector('.overlay');
+const btnCloseModal = document.querySelector('.close-modal');
+
 let btnEdit, btnDelete, currEditId;
 
 
@@ -108,7 +112,11 @@ class App {
         // console.log(this.#workouts.indexOf(this.#workouts.find(e => e.id === "1217363828")));
 
         formEdit.addEventListener("submit", this._editWorkoutSubmit.bind(this));
-        inputTypeEd.addEventListener("change", this._toggleElevationFieldEd)
+        inputTypeEd.addEventListener("change", this._toggleElevationFieldEd);
+        btnCloseModal.addEventListener("click", this._closeModal);
+        overlay.addEventListener("click", this._closeModal);
+        document.addEventListener('keydown', this._closeModalEsc.bind(this));
+
     }
 
     _getPosition() {
@@ -226,7 +234,7 @@ class App {
                 // !Number.isFinite(cadence)
                 !validInputs(distance, duration, cadence) || !allPositive(distance, duration, cadence)
                 ) 
-                return alert("Inputs have to be positive numbers!")
+                return this._openModal()
 
             workout = new Running([lat, lng], distance, duration, cadence);
             
@@ -236,7 +244,7 @@ class App {
             const elevation = +inputElevation.value;
 
             if(!validInputs(distance, duration, elevation) || !allPositive(distance, duration))
-                return alert("Inputs have to be positive numbers!")
+                return this._openModal()
 
                 workout = new Cycling([lat, lng], distance, duration, elevation);
         }
@@ -422,7 +430,7 @@ class App {
             if(
                 !validInputs(distance, duration, cadence) || !allPositive(distance, duration, cadence)
                 ) 
-                return alert("Inputs have to be positive numbers!")
+                return this._openModal()
 
             // upravit data v objekte
                 this.#workouts[workoutIndex].type = type;
@@ -438,7 +446,7 @@ class App {
             const elevation = +inputElevationEd.value;
 
             if(!validInputs(distance, duration, elevation) || !allPositive(distance, duration))
-                return alert("Inputs have to be positive numbers!")
+                return this._openModal()
 
                 // upravit data v objekte
                 this.#workouts[workoutIndex].type = type;
@@ -496,6 +504,23 @@ class App {
         this.#workouts.splice(this.#workouts.indexOf(this.#workouts.find(e => e.id === `${workoutId}`)), 1);
         this._setLocalStorage();
 
+    }
+
+    _openModal() {
+        modal.classList.remove('hidden');
+        overlay.classList.remove('hidden');
+    }
+
+    _closeModal() {
+        modal.classList.add('hidden');
+        overlay.classList.add('hidden');
+    }
+
+    _closeModalEsc(e) {
+        if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
+            this._closeModal();
+            }
+          
     }
 };
 
